@@ -1,0 +1,12 @@
+[package]
+name = "vros"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+anyhow = "1.0.58"
+deno_core = "0.143.0"
+tokio = { version = "1.20.0", features = ["rt-multi-thread", "macros"] }
+vros-steamvr = { path = "../vros-steamvr" }
