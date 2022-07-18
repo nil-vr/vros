@@ -1,6 +1,7 @@
 {
+  "$schema": "https://deno.land/x/deno/cli/schemas/config-file.v1.json",
   "tasks": {
-    "build-js": "deno bundle vros-vrchat-logs/src/main.ts vrchat-logs.js && deno bundle vros-steamvr/src/main.ts steamvr.js && deno bundle apps/steamvr-app-demo.ts steamvr-app-demo.js && deno bundle apps/vrchat-camera-meta.ts vrchat-camera-meta.js",
+    "build-js": "deno bundle vros-vrchat-logs/src/main.ts vrchat-logs.js && deno bundle vros-steamvr/src/main.ts steamvr.js && deno bundle --unstable vros-vrchat-osc-out/src/main.ts vrchat-osc-out.js && deno bundle apps/steamvr-app-demo.ts steamvr-app-demo.js && deno bundle apps/vrchat-camera-meta.ts vrchat-camera-meta.js && deno bundle apps/internet-time.ts internet-time.js && deno bundle apps/vrchat-video-demo.ts vrchat-video-demo.js",
     "build-rust": "cargo build",
     "build": "deno task build-rust && deno task build-js"
   }

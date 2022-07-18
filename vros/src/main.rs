@@ -25,8 +25,11 @@ async fn main() -> Result<(), AnyError> {
     let mut workers = [
         "vrchat-logs.js",
         "steamvr.js",
+        "vrchat-osc-out.js",
         "vrchat-camera-meta.js",
         "steamvr-app-demo.js",
+        "internet-time.js",
+        "vrchat-video-demo.js",
     ]
     .into_iter()
     .map(|script| {

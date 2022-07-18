@@ -73,8 +73,8 @@ class Session {
     };
 
     for await (const line of readStringDelim(this.file, "\r\n")) {
-      // deno-lint-ignore no-regex-spaces
       const parts = line.match(
+        // deno-lint-ignore no-regex-spaces
         /^\d{4}\.\d{2}\.\d{2} \d{2}:\d{2}:\d{2} .*? -  (.*)/,
       );
       if (parts === null) {
