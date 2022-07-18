@@ -15,18 +15,19 @@ channel.addEventListener("message", (e) => {
         return;
     }
     const addressBytes = new TextEncoder().encode(address);
-    const paddedAddressLength = ((addressBytes.length + 4) & ~3);
-    const buffer = new Uint8Array(((addressBytes.length + 4) & ~3) + 8);
+    const paddedAddressLength = (addressBytes.length + 4) & ~3;
+    const buffer = new Uint8Array(paddedAddressLength + 8);
 
     buffer.set(addressBytes, 0);
 
     buffer.fill(0, address.length, paddedAddressLength);
+    const view = new DataView(buffer.buffer, paddedAddressLength + 4, 4);
     if (type === "Float") {
         buffer.set(TYPE_FLOAT, paddedAddressLength);
-        new DataView(buffer.buffer, paddedAddressLength + 4, 4).setFloat32(0, value, false);
+        view.setFloat32(0, value, false);
     } else {
         buffer.set(TYPE_INT, paddedAddressLength);
-        new DataView(buffer.buffer, paddedAddressLength + 4, 4).setInt32(0, value, false);
+        view.setInt32(0, value, false);
     }
 
     let myPromise: Promise<number> | null = null;
