@@ -1,11 +1,9 @@
 use std::fmt;
 
-use miette::Diagnostic;
 use serde::{Deserialize, Serialize};
 use thiserror::Error;
 
-#[derive(Debug, Deserialize, Diagnostic, Error, Serialize)]
-#[diagnostic(help("Make sure SteamVR is installed."))]
+#[derive(Debug, Deserialize, Error, Serialize)]
 pub struct InitializationError {
     pub name: String,
     pub code: u32,

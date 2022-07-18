@@ -2,11 +2,14 @@
 name = "vros"
 version = "0.1.0"
 edition = "2021"
+default-run = "vros"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-anyhow = "1.0.58"
 deno_core = "0.143.0"
+deno_ops = "0.21.0"
+deno_runtime = "0.69.0"
+futures = "0.3.21"
 tokio = { version = "1.20.0", features = ["rt-multi-thread", "macros"] }
-vros-steamvr = { path = "../vros-steamvr" }
+windows = { version = "0.38.0", features = ["Win32_Foundation", "Win32_System_Com", "Win32_UI_Shell"] }

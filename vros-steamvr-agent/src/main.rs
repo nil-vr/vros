@@ -9,13 +9,14 @@ use std::{
     time::{Duration, Instant},
 };
 
+use api::{ApplicationName, FromAgent, InitializationError, ToAgent};
 use event::VREvent_t;
 use ovr_overlay_sys::{
     k_unMaxApplicationKeyLength, EVRApplicationError, EVRApplicationProperty, EVRApplicationType,
     EVREventType, EVRInitError, IVRApplications, IVRSystem,
 };
-use vros_steamvr_core::{ApplicationName, FromAgent, InitializationError, ToAgent};
 
+mod api;
 mod event;
 
 struct System(Pin<&'static mut IVRSystem>);
@@ -111,25 +112,27 @@ struct Sender<'a>(StdoutLock<'a>);
 
 impl<'a> Sender<'a> {
     fn send(&mut self, message: &FromAgent) {
-        let bytes = bincode::serialize(message).unwrap();
-        self.0
-            .write_all(&(bytes.len() as u32).to_le_bytes())
-            .expect("Send failed");
+        let bytes = serde_json::to_vec(message).unwrap();
         self.0.write_all(&bytes).expect("Send failed");
+        self.0.write_all(b"\n").expect("Send failed");
         self.0.flush().expect("Send failed");
     }
 }
 
 pub fn main() {
-    let (stdin_send, stdin) = mpsc::sync_channel::<bincode::Result<ToAgent>>(0);
+    let (stdin_send, stdin) = mpsc::sync_channel::<Result<ToAgent, io::Error>>(0);
     let _stdin_thread = thread::spawn(move || {
-        let mut stdin = io::stdin().lock();
-        loop {
-            // weird clippy bug?
-            #[allow(clippy::significant_drop_in_scrutinee)]
-            match bincode::deserialize_from(&mut stdin) {
+        for line in io::stdin().lines() {
+            let line = match line {
+                Ok(line) => line,
+                Err(err) => {
+                    stdin_send.send(Err(err)).expect("Thread send error");
+                    return;
+                }
+            };
+            match serde_json::from_str(&line) {
                 Ok(message) => stdin_send.send(Ok(message)),
-                Err(err) => stdin_send.send(Err(err)),
+                Err(err) => stdin_send.send(Err(err.into())),
             }
             .expect("Thread send error");
         }
@@ -163,7 +166,7 @@ pub fn main() {
                 &mut event as *mut _ as *mut _,
                 mem::size_of_val(&event) as u32,
             ) {
-                match dbg!(event.eventType) {
+                match event.eventType {
                     EVREventType::VREvent_SceneApplicationChanged => {
                         if let Ok(name) = get_scene_application_name(applications.as_mut()) {
                             stdout.send(&FromAgent::ApplicationName(name));

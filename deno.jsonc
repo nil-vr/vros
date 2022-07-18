@@ -1,0 +1,7 @@
+{
+  "tasks": {
+    "build-js": "deno bundle vros-vrchat-logs/src/main.ts vrchat-logs.js && deno bundle vros-steamvr/src/main.ts steamvr.js && deno bundle apps/steamvr-app-demo.ts steamvr-app-demo.js && deno bundle apps/vrchat-camera-meta.ts vrchat-camera-meta.js",
+    "build-rust": "cargo build",
+    "build": "deno task build-rust && deno task build-js"
+  }
+}

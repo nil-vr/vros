@@ -2,7 +2,5 @@
 resolver = "2"
 members = [
     "vros",
-    "vros-steamvr",
     "vros-steamvr-agent",
-    "vros-steamvr-core",
 ]
